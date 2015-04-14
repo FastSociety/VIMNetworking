@@ -13,7 +13,11 @@ Pod::Spec.new do |s|
   # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
   s.author           = { "Alfie Hanssen" => "" }
-  s.source           = { :git => "https://github.com/vimeo/VIMNetworking.git", :tag => s.version.to_s }
+  s.source           = { 
+    :git => "https://github.com/vimeo/VIMNetworking.git", 
+    :tag => s.version.to_s,
+    :submodules => true
+  }
   s.social_media_url = 'https://twitter.com/vimeo'
 
   s.platform     = :ios, '7.0'
