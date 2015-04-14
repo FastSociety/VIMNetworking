@@ -1,9 +1,4 @@
 #
-# Be sure to run `pod lib lint VIMNetworking.podspec' to ensure this is a
-# valid spec and remove all comments before submitting the spec.
-#
-# Any lines starting with a # are optional, but encouraged
-#
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
 #
 
@@ -25,12 +20,12 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.source_files = 'VIMNetworking/**/*{h,m}'
-  s.resource_bundles = {
-    'VIMNetworking' => ['Pod/Assets/*.png']
-  }
+  #  s.resource_bundles = {
+  #    'VIMNetworking' => ['Pod/Assets/*.png']
+  #  }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
-  # could replace External/AFNetworking with pod dep
-  s.dependency 'AFNetworking', '~> 2.5.2'
+  # http://stackoverflow.com/a/17735833/51700 version is captured in Podfile
+  s.dependency 'AFNetworking'
 end
