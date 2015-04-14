@@ -29,7 +29,7 @@ Pod::Spec.new do |s|
   #    'VIMNetworking' => ['Pod/Assets/*.png']
   #  }
 
-  # s.frameworks = 'UIKit', 'MapKit'
+  s.frameworks = 'Social', 'Accounts', 'MobileCoreServices', 'AVFoundation', 'SystemConfiguration'
   # http://stackoverflow.com/a/17735833/51700 version is captured in Podfile
   s.dependency 'AFNetworking'
 end
