@@ -32,5 +32,5 @@ Pod::Spec.new do |s|
   # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # could replace External/AFNetworking with pod dep
-  s.dependency 'AFNetworking', '=> 2.5.2'
+  s.dependency 'AFNetworking', '~> 2.5.2'
 end
