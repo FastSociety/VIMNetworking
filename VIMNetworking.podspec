@@ -23,12 +23,12 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '7.0'
   s.requires_arc = true
 
+  s.public_header_files = 'VIMNetworking/**/*.h'
   s.source_files = 'VIMNetworking/**/*{h,m}'
   #  s.resource_bundles = {
   #    'VIMNetworking' => ['Pod/Assets/*.png']
   #  }
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
   # s.frameworks = 'UIKit', 'MapKit'
   # http://stackoverflow.com/a/17735833/51700 version is captured in Podfile
   s.dependency 'AFNetworking'
