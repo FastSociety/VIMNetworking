@@ -24,6 +24,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
 
   s.public_header_files = 'VIMNetworking/**/*.h'
+  s.prefix_header_file = 'VIMNetworking/VIMNetworking/VIMNetworking-Prefix.pch'
   s.source_files = 'VIMNetworking/**/*{h,m}'
   #  s.resource_bundles = {
   #    'VIMNetworking' => ['Pod/Assets/*.png']
