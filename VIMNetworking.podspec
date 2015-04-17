@@ -33,4 +33,5 @@ Pod::Spec.new do |s|
   s.frameworks = 'Social', 'Accounts', 'MobileCoreServices', 'AVFoundation', 'SystemConfiguration'
   # http://stackoverflow.com/a/17735833/51700 version is captured in Podfile
   s.dependency 'AFNetworking'
+  s.xcconfig = { "HEADER_SEARCH_PATHS" => ["./Pods/AFNetworking/AFNetworking/**/*.h"] }   
 end
