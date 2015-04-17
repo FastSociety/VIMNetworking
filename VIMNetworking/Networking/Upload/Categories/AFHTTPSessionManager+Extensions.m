@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import "AFHTTPSessionManager.h"
+#import "AFNetworking/AFHTTPSessionManager.h"
 
 @implementation AFHTTPSessionManager (Extensions)
 
