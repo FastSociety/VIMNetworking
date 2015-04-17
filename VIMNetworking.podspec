@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "Alfie Hanssen" => "" }
   s.source           = { 
-    :git => "https://github.com/vimeo/VIMNetworking.git", 
+    :git => "https://github.com/FastSociety/VIMNetworking.git", 
     :tag => s.version.to_s,
     :submodules => true
   }
