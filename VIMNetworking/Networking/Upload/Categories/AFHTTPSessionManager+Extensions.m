@@ -1,5 +1,5 @@
 //
-//  AFHTTPSessionManager.m
+//  AFHTTPSessionManager+Extensions.m
 //  VIMNetworking
 //
 //  Created by Hanssen, Alfie on 3/9/15.
@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import "AFNetworking/AFHTTPSessionManager.h"
+#import "AFHTTPSessionManager.h"
 
 @implementation AFHTTPSessionManager (Extensions)
 
