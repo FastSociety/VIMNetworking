@@ -11,9 +11,9 @@ platform :ios, '8.0'
 #
 
 # ignore all warnings from all pods
-inhibit_all_warnings!
+# inhibit_all_warnings!
 
-use_frameworks!
+# use_frameworks!
 
 target "VIMNetworking" do
   pod 'AFNetworking' => '2.5.2'
