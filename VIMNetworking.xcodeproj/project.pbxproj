@@ -220,7 +220,6 @@
 		6F3ACF50D887F59E6C9374FF /* Pods-VIMNetworking.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VIMNetworking.debug.xcconfig"; path = "Pods/Target Support Files/Pods-VIMNetworking/Pods-VIMNetworking.debug.xcconfig"; sourceTree = "<group>"; };
 		AB633AB218F364ED00971630 /* libVIMNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libVIMNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB633AB518F364ED00971630 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		AB633AB918F364ED00971630 /* VIMNetworking-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "VIMNetworking-Prefix.pch"; sourceTree = "<group>"; };
 		AB633ABA18F364ED00971630 /* VIMNetworking.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VIMNetworking.h; sourceTree = "<group>"; };
 		AB633AC218F364ED00971630 /* VIMNetworkingTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VIMNetworkingTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AB633AC318F364ED00971630 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
@@ -506,7 +505,6 @@
 		AB633AB818F364ED00971630 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				AB633AB918F364ED00971630 /* VIMNetworking-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
