@@ -33,7 +33,13 @@
     NSAssert(sessionID, @"Invalid session ID");
     
     NSURLSessionConfiguration *sessionConfiguration = nil;
-#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
+    
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0
+    if ([NSURLSessionConfiguration respondsToSelector:@selector(backgroundSessionConfigurationWithIdentifier:)])
+    {
+        sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:sessionID];
+    }
+#elif __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_7_1
     if ([NSURLSessionConfiguration respondsToSelector:@selector(backgroundSessionConfigurationWithIdentifier:)])
     {
         sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:sessionID];
@@ -50,7 +56,6 @@
             [sessionConfiguration setSharedContainerIdentifier:sharedContainerID];
         }
     }
-    
 #else
     sessionConfiguration = [NSURLSessionConfiguration backgroundSessionConfiguration:sessionID];
 #endif
