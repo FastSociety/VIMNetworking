@@ -16,7 +16,8 @@ Pod::Spec.new do |s|
   s.source           = { 
     :git => "https://github.com/FastSociety/VIMNetworking.git", 
     :tag => s.version.to_s,
-    :submodules => true
+    :submodules => true,
+    :branch => 'cocoapod'
   }
   s.social_media_url = 'https://twitter.com/vimeo'
 
