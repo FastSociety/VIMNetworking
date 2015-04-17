@@ -23,6 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
+#import <Foundation/Foundation.h>
 
 extern NSString * const VIMReachabilityStatusChangeOfflineNotification;
 extern NSString * const VIMReachabilityStatusChangeOnlineNotification;
