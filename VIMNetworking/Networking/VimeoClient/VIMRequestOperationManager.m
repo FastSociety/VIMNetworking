@@ -25,7 +25,7 @@
 //
 
 #import "VIMRequestOperationManager.h"
-#import "AFHTTPRequestOperation.h"
+#import <AFNetworking/AFHTTPRequestOperation.h>
 #import "AFURLRequestSerialization.h"
 #import "AFURLResponseSerialization.h"
 #import "VIMMappable.h"
