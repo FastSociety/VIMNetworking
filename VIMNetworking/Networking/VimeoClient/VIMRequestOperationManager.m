@@ -1,5 +1,5 @@
 //
-//  VIMVimeoClient.m
+//  VIMRequestOperationManager.m
 //  VIMNetworking
 //
 //  Created by Kashif Mohammad on 3/24/13.
