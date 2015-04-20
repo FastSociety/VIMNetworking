@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import "AFHTTPRequestOperationManager.h"
+#import <AFNetworking/AFHTTPRequestOperationManager.h>
 
 @class VIMRequestDescriptor;
 @class VIMServerResponse;

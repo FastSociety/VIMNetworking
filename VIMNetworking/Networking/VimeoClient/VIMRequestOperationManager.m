@@ -1,5 +1,5 @@
 //
-//  VIMVimeoClient.m
+//  VIMRequestOperationManager.m
 //  VIMNetworking
 //
 //  Created by Kashif Mohammad on 3/24/13.
@@ -25,9 +25,9 @@
 //
 
 #import "VIMRequestOperationManager.h"
-#import "AFHTTPRequestOperation.h"
-#import "AFURLRequestSerialization.h"
-#import "AFURLResponseSerialization.h"
+#import <AFNetworking/AFHTTPRequestOperation.h>
+#import <AFNetworking/AFURLRequestSerialization.h>
+#import <AFNetworking/AFURLResponseSerialization.h>
 #import "VIMMappable.h"
 #import "VIMObjectMapper.h"
 #import "VIMCache.h"
