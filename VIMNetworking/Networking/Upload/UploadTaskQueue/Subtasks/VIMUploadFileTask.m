@@ -55,6 +55,7 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     if (self)
     {
         self.name = (NSString *)VIMUploadFileTaskName;
+        self.httpMethod = @"PUT";
         
         _source = [source copy];
         _destination = [destination copy];

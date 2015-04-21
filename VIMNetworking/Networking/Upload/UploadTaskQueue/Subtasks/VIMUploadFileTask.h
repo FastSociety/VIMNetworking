@@ -28,7 +28,7 @@
 
 @interface VIMUploadFileTask : VIMNetworkTask
 
-@property (nonatomic, copy, readwrite) NSString *httpMethod = @"PUT";
+@property (nonatomic, copy, readwrite) NSString *httpMethod;
 
 
 // Output
