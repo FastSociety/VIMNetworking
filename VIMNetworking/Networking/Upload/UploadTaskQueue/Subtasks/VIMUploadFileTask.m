@@ -97,7 +97,7 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     }
     
     NSError *error = nil;
-    NSMutableURLRequest *request = [self.sessionManager.requestSerializer requestWithMethod:@"PUT" URLString:self.destination parameters:nil error:&error];
+    NSMutableURLRequest *request = [self.sessionManager.requestSerializer requestWithMethod:self.httpMethod URLString:self.destination parameters:nil error:&error];
     if (error)
     {
         self.error = [NSError errorWithDomain:(NSString *)VIMUploadFileTaskErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Unable to serialize request."}];
@@ -221,6 +221,7 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
         self.source = [coder decodeObjectForKey:NSStringFromSelector(@selector(source))];
         self.destination = [coder decodeObjectForKey:NSStringFromSelector(@selector(destination))];
         self.success = [coder decodeBoolForKey:NSStringFromSelector(@selector(success))];
+        self.httpMethod = [coder decodeObjectForKey:NSStringFromSelector(@selector(httpMethod))];
     }
     
     return self;
@@ -233,6 +234,7 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     [coder encodeObject:self.source forKey:NSStringFromSelector(@selector(source))];
     [coder encodeObject:self.destination forKey:NSStringFromSelector(@selector(destination))];
     [coder encodeBool:self.success forKey:NSStringFromSelector(@selector(success))];
+    [coder encodeObject:self.httpMethod forKey:NSStringFromSelector(@selector(httpMethod))];
 }
 
 @end
