@@ -35,7 +35,7 @@
 #import "VIMPrivacy.h"
 #import "VIMAppeal.h"
 #import "NSString+MD5.h"
-#import "VIMObjectMapper.h"
+#import <VIMObjectMapper/VIMObjectMapper.h>
 #import "VIMTag.h"
 #import "VIMVideoLog.h"
 

@@ -29,7 +29,7 @@
 #import "VIMInteraction.h"
 #import "VIMPictureCollection.h"
 #import "VIMPicture.h"
-#import "VIMObjectMapper.h"
+#import <VIMObjectMapper/VIMObjectMapper.h>
 #import "NSString+MD5.h"
 #import "VIMSession.h"
 

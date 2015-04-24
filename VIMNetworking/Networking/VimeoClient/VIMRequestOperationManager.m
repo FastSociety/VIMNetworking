@@ -29,7 +29,7 @@
 #import <AFNetworking/AFURLRequestSerialization.h>
 #import <AFNetworking/AFURLResponseSerialization.h>
 #import "VIMMappable.h"
-#import "VIMObjectMapper.h"
+#import <VIMObjectMapper/VIMObjectMapper.h>
 #import "VIMCache.h"
 #import "VIMRequestDescriptor.h"
 #import "VIMRequestToken.h"
