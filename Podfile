@@ -16,6 +16,7 @@ platform :ios, '8.0'
 use_frameworks!
 
 target "VIMNetworking" do
+  pod 'VIMObjectMapper', :git => 'https://github.com/FastSociety/VIMObjectMapper.git'
   pod 'AFNetworking' => '2.5.2'
 end
 
