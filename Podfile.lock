@@ -20,11 +20,23 @@ PODS:
   - AFNetworking/UIKit (2.5.2):
     - AFNetworking/NSURLConnection
     - AFNetworking/NSURLSession
+  - VIMObjectMapper (1.0.0)
 
 DEPENDENCIES:
   - AFNetworking (= 2.5.2)
+  - VIMObjectMapper (from `https://github.com/FastSociety/VIMObjectMapper.git`)
+
+EXTERNAL SOURCES:
+  VIMObjectMapper:
+    :git: https://github.com/FastSociety/VIMObjectMapper.git
+
+CHECKOUT OPTIONS:
+  VIMObjectMapper:
+    :commit: 77658a3541168efd717c63854915b0d2016a4d95
+    :git: https://github.com/FastSociety/VIMObjectMapper.git
 
 SPEC CHECKSUMS:
   AFNetworking: fefbce9660acb17f48ae0011292d4da0f457bf36
+  VIMObjectMapper: 6601733b9721da64544ac76c7ddb07e3b7b1c7bd
 
-COCOAPODS: 0.36.3
+COCOAPODS: 0.36.4
