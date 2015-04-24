@@ -10,9 +10,7 @@ Pod::Spec.new do |s|
   s.author           = { "Alfie Hanssen" => "" }
   s.source           = { 
     :git => "https://github.com/FastSociety/VIMNetworking.git", 
-    :tag => s.version.to_s,
-    :submodules => true,
-    :branch => 'cocoapod'
+    :tag => s.version.to_s
   }
   s.social_media_url = 'https://twitter.com/vimeo'
 
@@ -24,7 +22,7 @@ Pod::Spec.new do |s|
 
   s.frameworks = 'Social', 'Accounts', 'MobileCoreServices', 'AVFoundation', 'SystemConfiguration'
   # http://stackoverflow.com/a/17735833/51700 version is captured in Podfile
-  s.dependency 'VIMObjectMapper'
+  s.dependency 'VIMObjectMapper', :git => 'https://github.com/FastSociety/VIMObjectMapper.git'
   s.dependency 'AFNetworking'
 
 end
