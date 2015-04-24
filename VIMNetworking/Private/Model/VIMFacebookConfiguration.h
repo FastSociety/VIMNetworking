@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMModelObject.h"
+#import <VIMObjectMapper/VIMModelObject.h>
 
 @interface VIMFacebookConfiguration : VIMModelObject
 

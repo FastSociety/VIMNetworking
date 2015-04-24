@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import "VIMModelObject.h"
+#import <VIMObjectMapper/VIMModelObject.h>
 
 extern NSString *VIMPrivacy_Private;
 extern NSString *VIMPrivacy_Select;
