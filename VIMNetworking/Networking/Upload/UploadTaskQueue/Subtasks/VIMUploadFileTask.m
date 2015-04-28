@@ -95,6 +95,13 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     
     NSError *error = nil;
     NSMutableURLRequest *request = [self.sessionManager.requestSerializer requestWithMethod:self.httpMethod URLString:self.destination parameters:nil error:&error];
+    
+    //    md5Hash:self.md5Sum
+//    NSMutableURLRequest *arequest = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:self.httpMethod URLString:self.destination parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
+//        [formData appendPartWithFormData:[NSData init] name:@"jsonData"];
+//        [formData appendPartWithFileURL:[NSURL fileURLWithPath:self.source] name:@"" fileName:@"" mimeType:self.contentType error:nil];
+//    } error:&error];
+    
     if (error)
     {
         self.error = [NSError errorWithDomain:(NSString *)VIMUploadFileTaskErrorDomain code:0 userInfo:@{NSLocalizedDescriptionKey : @"Unable to serialize request."}];
