@@ -55,6 +55,7 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
         self.name = (NSString *)VIMUploadFileTaskName;
         self.httpMethod = @"PUT";
         self.contentType = @"video/mp4";
+        self.md5Sum = nil;
         
         _source = [source copy];
         _destination = [destination copy];
@@ -122,6 +123,9 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     
     [request setValue:[NSString stringWithFormat:@"%llu", [size unsignedLongLongValue]] forHTTPHeaderField:@"Content-Length"];
     [request setValue:self.contentType forHTTPHeaderField:@"Content-Type"];
+    if (self.md5Sum) {
+        [request setValue:self.md5Sum forHTTPHeaderField:@"Content-MD5"];
+    }
     
     NSProgress *progress = nil;
     NSURLSessionUploadTask *task = [self.sessionManager uploadTaskWithRequest:request fromFile:sourceURL progress:&progress completionHandler:nil];
@@ -223,6 +227,7 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
         self.success = [coder decodeBoolForKey:NSStringFromSelector(@selector(success))];
         self.httpMethod = [coder decodeObjectForKey:NSStringFromSelector(@selector(httpMethod))];
         self.contentType = [coder decodeObjectForKey:NSStringFromSelector(@selector(contentType))];
+        self.md5Sum = [coder decodeObjectForKey:NSStringFromSelector(@selector(md5Sum))];
     }
     
     return self;
@@ -237,6 +242,7 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     [coder encodeBool:self.success forKey:NSStringFromSelector(@selector(success))];
     [coder encodeObject:self.httpMethod forKey:NSStringFromSelector(@selector(httpMethod))];
     [coder encodeObject:self.contentType forKey:NSStringFromSelector(@selector(contentType))];
+    [coder encodeObject:self.md5Sum forKey:NSStringFromSelector(@selector(md5Sum))];
 }
 
 @end
