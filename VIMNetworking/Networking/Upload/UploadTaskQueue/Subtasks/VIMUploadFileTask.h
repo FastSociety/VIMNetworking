@@ -28,6 +28,8 @@
 
 @interface VIMUploadFileTask : VIMNetworkTask
 
+- (NSMutableURLRequest *)getRequest:(NSError*)error;
+
 @property (nonatomic, copy, readwrite) NSString *httpMethod;
 @property (nonatomic, copy, readwrite) NSString *contentType;
 @property (nonatomic, copy, readwrite) NSString *source;
