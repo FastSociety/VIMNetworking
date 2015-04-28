@@ -62,6 +62,11 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
 
 #pragma mark - Public API
 
+- (NSMutableURLRequest *)getRequest:(NSError*)error
+{
+    return [self.sessionManager.requestSerializer requestWithMethod:self.httpMethod URLString:self.destination parameters:nil error:&error];
+}
+
 - (void)resume
 {
     NSAssert(self.state != TaskStateFinished, @"Cannot start a finished task");
@@ -94,7 +99,8 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     }
     
     NSError *error = nil;
-    NSMutableURLRequest *request = [self.sessionManager.requestSerializer requestWithMethod:self.httpMethod URLString:self.destination parameters:nil error:&error];
+//    NSMutableURLRequest *request = [self.sessionManager.requestSerializer requestWithMethod:self.httpMethod URLString:self.destination parameters:nil error:&error];
+    NSMutableURLRequest *request = [self getRequest:(NSError *)error];
     
     //    md5Hash:self.md5Sum
 //    NSMutableURLRequest *arequest = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:self.httpMethod URLString:self.destination parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
