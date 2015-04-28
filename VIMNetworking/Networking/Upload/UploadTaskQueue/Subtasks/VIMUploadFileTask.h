@@ -35,8 +35,10 @@
 @property (nonatomic, copy, readwrite) NSString *md5Sum;
 
 
-// Output
-@property (nonatomic, strong, readonly) NSProgress *uploadProgress;
+// Output, changed to readwrite for child class setting
+@property (nonatomic, strong, readwrite) NSProgress *uploadProgress;
+
+@property (nonatomic, assign) BOOL success;
 
 - (instancetype)initWithSource:(NSString *)source destination:(NSString *)destination;
 

@@ -31,10 +31,6 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
 
 @interface VIMUploadFileTask ()
 
-@property (nonatomic, strong, readwrite) NSProgress *uploadProgress;
-
-@property (nonatomic, assign) BOOL success;
-
 @end
 
 @implementation VIMUploadFileTask
