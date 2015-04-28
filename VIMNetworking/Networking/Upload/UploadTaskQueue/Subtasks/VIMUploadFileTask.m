@@ -129,6 +129,12 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     
     NSProgress *progress = nil;
     NSURLSessionUploadTask *task = [self.sessionManager uploadTaskWithRequest:request fromFile:sourceURL progress:&progress completionHandler:nil];
+    
+    // debugging with a completion handler [ME]
+//    NSURLSessionUploadTask *task = [self.sessionManager uploadTaskWithRequest:request fromFile:sourceURL progress:&progress completionHandler:
+//                                    ^ void (NSURLResponse *response, id responseObject, NSError *error) {
+//                                        NSLog(@"in nsurlsession uploadTaskWithRequest completion block to see if md5Sum was checked response %@ object %@",response,responseObject);
+//                                    }];
     self.backgroundTaskIdentifier = task.taskIdentifier;
 
     self.uploadProgress = progress;
