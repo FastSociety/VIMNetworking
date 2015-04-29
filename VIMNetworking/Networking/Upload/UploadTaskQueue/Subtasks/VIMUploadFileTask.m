@@ -51,7 +51,6 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
         self.name = (NSString *)VIMUploadFileTaskName;
         self.httpMethod = @"PUT";
         self.contentType = @"video/mp4";
-        self.md5Sum = nil;
         
         _source = [source copy];
         _destination = [destination copy];
@@ -99,14 +98,7 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     }
     
     NSError *error = nil;
-//    NSMutableURLRequest *request = [self.sessionManager.requestSerializer requestWithMethod:self.httpMethod URLString:self.destination parameters:nil error:&error];
-    NSMutableURLRequest *request = [self getRequest:(NSError *)error];
-    
-    //    md5Hash:self.md5Sum
-//    NSMutableURLRequest *arequest = [[AFHTTPRequestSerializer serializer] multipartFormRequestWithMethod:self.httpMethod URLString:self.destination parameters:nil constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
-//        [formData appendPartWithFormData:[NSData init] name:@"jsonData"];
-//        [formData appendPartWithFileURL:[NSURL fileURLWithPath:self.source] name:@"" fileName:@"" mimeType:self.contentType error:nil];
-//    } error:&error];
+    NSMutableURLRequest *request = [self.sessionManager.requestSerializer requestWithMethod:self.httpMethod URLString:self.destination parameters:nil error:&error];
     
     if (error)
     {
@@ -132,9 +124,6 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     
     [request setValue:[NSString stringWithFormat:@"%llu", [size unsignedLongLongValue]] forHTTPHeaderField:@"Content-Length"];
     [request setValue:self.contentType forHTTPHeaderField:@"Content-Type"];
-    if (self.md5Sum) {
-        [request setValue:self.md5Sum forHTTPHeaderField:@"Content-MD5"];
-    }
     
     NSProgress *progress = nil;
     NSURLSessionUploadTask *task = [self.sessionManager uploadTaskWithRequest:request fromFile:sourceURL progress:&progress completionHandler:nil];
@@ -142,7 +131,7 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     // debugging with a completion handler [ME]
 //    NSURLSessionUploadTask *task = [self.sessionManager uploadTaskWithRequest:request fromFile:sourceURL progress:&progress completionHandler:
 //                                    ^ void (NSURLResponse *response, id responseObject, NSError *error) {
-//                                        NSLog(@"in nsurlsession uploadTaskWithRequest completion block to see if md5Sum was checked response %@ object %@",response,responseObject);
+//                                        NSLog(@"in nsurlsession uploadTaskWithRequest completion block response %@ object %@",response,responseObject);
 //                                    }];
     self.backgroundTaskIdentifier = task.taskIdentifier;
 
@@ -242,7 +231,6 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
         self.success = [coder decodeBoolForKey:NSStringFromSelector(@selector(success))];
         self.httpMethod = [coder decodeObjectForKey:NSStringFromSelector(@selector(httpMethod))];
         self.contentType = [coder decodeObjectForKey:NSStringFromSelector(@selector(contentType))];
-        self.md5Sum = [coder decodeObjectForKey:NSStringFromSelector(@selector(md5Sum))];
     }
     
     return self;
@@ -257,7 +245,6 @@ static const NSString *VIMUploadFileTaskErrorDomain = @"VIMUploadFileTaskErrorDo
     [coder encodeBool:self.success forKey:NSStringFromSelector(@selector(success))];
     [coder encodeObject:self.httpMethod forKey:NSStringFromSelector(@selector(httpMethod))];
     [coder encodeObject:self.contentType forKey:NSStringFromSelector(@selector(contentType))];
-    [coder encodeObject:self.md5Sum forKey:NSStringFromSelector(@selector(md5Sum))];
 }
 
 @end

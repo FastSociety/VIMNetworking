@@ -34,7 +34,6 @@
 @property (nonatomic, copy, readwrite) NSString *contentType;
 @property (nonatomic, copy, readwrite) NSString *source;
 @property (nonatomic, copy, readwrite) NSString *destination;
-@property (nonatomic, copy, readwrite) NSString *md5Sum;
 
 
 // Output, changed to readwrite for child class setting
