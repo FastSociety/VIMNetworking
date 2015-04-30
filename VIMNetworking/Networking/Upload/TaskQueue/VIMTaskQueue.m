@@ -224,6 +224,23 @@ static NSString *CurrentTaskKey = @"current_task";
     return task;
 }
 
+- (BOOL)anyTaskSatisfiesQuery:(TaskQueryBlock)query
+{
+    dispatch_sync(_tasksQueue, ^{ 
+
+        for (VIMTask *currentTask in self.tasks)
+        {
+            if ([query currentTask])
+            {
+                return true
+            }
+        }
+
+    });
+    
+    return false;
+}
+
 - (void)prepareTask:(VIMTask *)task
 {
     // Optional subclass override 

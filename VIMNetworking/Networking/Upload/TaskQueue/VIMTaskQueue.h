@@ -26,6 +26,8 @@
 
 #import <Foundation/Foundation.h>
 
+typedef BOOL(^TaskQueryBlock)((VIMTask *)task);
+
 @class VIMTask;
 
 @interface VIMTaskQueue : NSObject
@@ -50,12 +52,9 @@
 - (void)prepareTask:(VIMTask *)task;
 
 - (VIMTask *)taskForIdentifier:(NSString *)identifier;
+- (BOOL)anyTaskSatisfiesQuery:(TaskQueryBlock)query;
 
 // Override to return shared container defaults [AH]
 - (NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]
-
-// needed header access for swift subclasses
-@property (nonatomic, strong) NSMutableArray *tasks;
-dispatch_queue_t _tasksQueue;
 
 @end
