@@ -26,9 +26,9 @@
 
 #import <Foundation/Foundation.h>
 
-typedef BOOL(^TaskQueryBlock)((VIMTask *)task);
-
 @class VIMTask;
+
+typedef BOOL(^TaskQueryBlock)((VIMTask *)task);
 
 @interface VIMTaskQueue : NSObject
 
