@@ -28,7 +28,8 @@
 
 @class VIMTask;
 
-typedef BOOL(^TaskQueryBlock)((VIMTask *)task);
+typedef BOOL(^TaskQueueQueryBlock)(VIMTask *task);
+typedef NSMutableArray *(^TaskQueueProcessBlock)(VIMTask *task);
 
 @interface VIMTaskQueue : NSObject
 
@@ -52,7 +53,8 @@ typedef BOOL(^TaskQueryBlock)((VIMTask *)task);
 - (void)prepareTask:(VIMTask *)task;
 
 - (VIMTask *)taskForIdentifier:(NSString *)identifier;
-- (BOOL)anyTaskSatisfiesQuery:(TaskQueryBlock)query;
+- (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query;
+- (NSArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor;
 
 // Override to return shared container defaults [AH]
 - (NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]

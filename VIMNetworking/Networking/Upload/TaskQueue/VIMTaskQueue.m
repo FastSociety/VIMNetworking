@@ -224,24 +224,40 @@ static NSString *CurrentTaskKey = @"current_task";
     return task;
 }
 
-/*
-- (BOOL)anyTaskSatisfiesQuery:(TaskQueryBlock)query
+
+- (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query
 {
-    dispatch_sync(_tasksQueue, ^{ 
+    __block BOOL result = false;
+    dispatch_sync(_tasksQueue, ^{
 
         for (VIMTask *currentTask in self.tasks)
         {
-            if ([query currentTask])
+            if (query(currentTask))
             {
-                return true
+                result = true;
             }
         }
 
     });
     
-    return false;
+    return result;
 }
-*/
+
+- (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
+{
+    __block NSMutableArray *results;
+    dispatch_sync(_tasksQueue, ^{
+        
+        for (VIMTask *currentTask in self.tasks)
+        {
+            [results addObject: taskProcessor(currentTask)];
+        }
+        
+    });
+    
+    return results;
+
+}
 
 - (void)prepareTask:(VIMTask *)task
 {
