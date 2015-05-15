@@ -219,9 +219,10 @@ static const NSString *CellularEnabledKey = @"cellular_enabled";
 
 - (void)notifyOfStateChange
 {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [[NSNotificationCenter defaultCenter] postNotificationName:VIMNetworkTaskQueue_DidSuspendOrResumeNotification object:nil];
-    });
+    // disabling queue notifications for now [ME]
+    // dispatch_async(dispatch_get_main_queue(), ^{
+    //     [[NSNotificationCenter defaultCenter] postNotificationName:VIMNetworkTaskQueue_DidSuspendOrResumeNotification object:nil];
+    // });
 }
 
 #pragma mark - Archival
