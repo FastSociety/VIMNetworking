@@ -184,9 +184,9 @@ static const NSString *CellularEnabledKey = @"cellular_enabled";
 
 - (void)addObservers
 {
-    // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onlineNotification:) name:VIMReachabilityStatusChangeOnlineNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onlineNotification:) name:VIMReachabilityStatusChangeOnlineNotification object:nil];
     
-    // [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(offlineNotification:) name:VIMReachabilityStatusChangeOfflineNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(offlineNotification:) name:VIMReachabilityStatusChangeOfflineNotification object:nil];
 }
 
 - (void)onlineNotification:(NSNotification *)notification
