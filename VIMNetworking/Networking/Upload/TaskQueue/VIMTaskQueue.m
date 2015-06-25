@@ -34,6 +34,8 @@ NSString *const VIMTaskQueueTaskSucceededNotification = @"VIMTaskQueueTaskSuccee
 static NSString *TasksKey = @"tasks";
 static NSString *CurrentTaskKey = @"current_task";
 
+static void *TaskQueueSpecific = "TaskQueueSpecific";
+
 @interface VIMTaskQueue () <VIMTaskDelegate>
 {
     dispatch_queue_t _archivalQueue;
@@ -429,23 +431,43 @@ static NSString *CurrentTaskKey = @"current_task";
 
 - (void)taskDidComplete:(VIMTask *)task
 {
-    // We would normally dispatch this to the _tasksQueue
-    // But that would create issues with calling the sessionManager completionHandler
-    // At the appropriate time [AH]
+    // Determined at WWDC 2015 in concert with an Apple Foundation engineer that dispatch_sync is the appropriate mechanism to use here [AH]
+    // The intent is for this to not adversely impact session delegate completionHandler call
     
-    // TODO: should this be a dispatch_sync to the _tasksQueue? In the event that a user adds tasks at the moment a task is completing. [AH]
-    
-        self.currentTask = nil;
-        
-        [self save];
-        
-        [self updateTaskCount];
-        
-        [self logTaskStatus:task];
-        
-        [self startNextTask];
+    if (dispatch_get_specific(TaskQueueSpecific))
+    {
+        [self respondToTaskCompletion:task];
+    }
+    else
+    {
+        dispatch_sync(_tasksQueue, ^{
+            [self respondToTaskCompletion:task];
+        });
+    }
 }
 
+- (void)respondToTaskCompletion:(VIMTask *)task
+{
+    self.currentTask = nil;
+    
+    [self save];
+    
+    [self updateTaskCount];
+    
+    [self logTaskStatus:task];
+    
+    if ([task didSucceed])
+    {
+        [[NSNotificationCenter defaultCenter] postNotificationName:VIMTaskQueueTaskSucceededNotification object:task];
+    }
+    else if (task.error.code != NSURLErrorCancelled)
+    {
+        [[NSNotificationCenter defaultCenter] postNotificationName:VIMTaskQueueTaskFailedNotification object:task];
+    }
+    
+    [self startNextTask];
+    
+}
 - (void)logTaskStatus:(VIMTask *)task
 {
     if ([task didSucceed])
