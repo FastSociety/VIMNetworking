@@ -132,7 +132,7 @@ static const NSString *CellularEnabledKey = @"cellular_enabled";
     
     if ([[VIMReachability sharedInstance] isOn3G] && self.isCellularUploadEnabled == NO)
     {
-        self.cellularUploadEnabled = YES;
+        return;
     }
     
     [super resume];
@@ -217,6 +217,7 @@ static const NSString *CellularEnabledKey = @"cellular_enabled";
 
 - (void)notifyOfStateChange
 {
+    // need these enabled [ME]
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:VIMNetworkTaskQueue_DidSuspendOrResumeNotification object:nil];
     });

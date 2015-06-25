@@ -34,8 +34,6 @@ NSString *const VIMTaskQueueTaskSucceededNotification = @"VIMTaskQueueTaskSuccee
 static NSString *TasksKey = @"tasks";
 static NSString *CurrentTaskKey = @"current_task";
 
-static void *TaskQueueSpecific = "TaskQueueSpecific";
-
 @interface VIMTaskQueue () <VIMTaskDelegate>
 {
     dispatch_queue_t _archivalQueue;
@@ -47,8 +45,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 @property (nonatomic, assign, getter=isSuspended) BOOL suspended;
 
 @property (nonatomic, strong) NSMutableArray *tasks;
-
-@property (nonatomic, strong) VIMTask *currentTask;
 
 @property (nonatomic, assign, readwrite) NSInteger taskCount;
 
@@ -65,8 +61,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         
         _archivalQueue = dispatch_queue_create("com.vimeo.uploadQueue.archivalQueue", DISPATCH_QUEUE_SERIAL);
         _tasksQueue = dispatch_queue_create("com.vimeo.uploadQueue.taskQueue", DISPATCH_QUEUE_SERIAL);
-
-        dispatch_queue_set_specific(_tasksQueue, TaskQueueSpecific, (void *)TaskQueueSpecific, NULL);
 
         _tasks = [NSMutableArray array];
 
@@ -231,6 +225,41 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     return task;
 }
 
+
+- (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query
+{
+    __block BOOL result = false;
+    dispatch_sync(_tasksQueue, ^{
+
+        for (VIMTask *currentTask in self.tasks)
+        {
+            if (query(currentTask))
+            {
+                result = true;
+            }
+        }
+
+    });
+    
+    return result;
+}
+
+- (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
+{
+    __block NSMutableArray *results;
+    dispatch_sync(_tasksQueue, ^{
+        
+        for (VIMTask *currentTask in self.tasks)
+        {
+            [results addObject: taskProcessor(currentTask)];
+        }
+        
+    });
+    
+    return results;
+
+}
+
 - (void)prepareTask:(VIMTask *)task
 {
     // Optional subclass override 
@@ -305,6 +334,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 - (void)save
 {
+    
     NSDictionary *dictionary = @{TasksKey : [self.tasks copy]};
     NSMutableDictionary *archiveDictionary = [NSMutableDictionary dictionaryWithDictionary:dictionary];
     
@@ -312,8 +342,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     {
         archiveDictionary[CurrentTaskKey] = self.currentTask;
     }
-    
-    NSLog(@"SAVING: %@", dictionary);
     
     __weak typeof(self) welf = self;
     dispatch_async(_archivalQueue, ^{
@@ -370,8 +398,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             NSArray *tasks = dictionary[TasksKey];
             [self.tasks addObjectsFromArray:tasks];
             
-            [self updateTaskCount];
-            
             NSString *message = [NSString stringWithFormat:@"LOAD %lu", (unsigned long)[tasks count]];
             [VIMTaskQueueDebugger postLocalNotificationWithContext:self.name message:message];
         }
@@ -403,43 +429,23 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 - (void)taskDidComplete:(VIMTask *)task
 {
-    // Determined at WWDC 2015 in concert with an Apple Foundation engineer that dispatch_sync is the appropriate mechanism to use here [AH]
-    // The intent is for this to not adversely impact session delegate completionHandler call
+    // We would normally dispatch this to the _tasksQueue
+    // But that would create issues with calling the sessionManager completionHandler
+    // At the appropriate time [AH]
     
-    if (dispatch_get_specific(TaskQueueSpecific))
-    {
-        [self respondToTaskCompletion:task];
-    }
-    else
-    {
-        dispatch_sync(_tasksQueue, ^{
-            [self respondToTaskCompletion:task];
-        });
-    }
+    // TODO: should this be a dispatch_sync to the _tasksQueue? In the event that a user adds tasks at the moment a task is completing. [AH]
+    
+        self.currentTask = nil;
+        
+        [self save];
+        
+        [self updateTaskCount];
+        
+        [self logTaskStatus:task];
+        
+        [self startNextTask];
 }
 
-- (void)respondToTaskCompletion:(VIMTask *)task
-{
-    self.currentTask = nil;
-    
-    [self save];
-    
-    [self updateTaskCount];
-    
-    [self logTaskStatus:task];
-    
-    if ([task didSucceed])
-    {
-        [[NSNotificationCenter defaultCenter] postNotificationName:VIMTaskQueueTaskSucceededNotification object:task];
-    }
-    else if (task.error.code != NSURLErrorCancelled)
-    {
-        [[NSNotificationCenter defaultCenter] postNotificationName:VIMTaskQueueTaskFailedNotification object:task];
-    }
-    
-    [self startNextTask];
-    
-}
 - (void)logTaskStatus:(VIMTask *)task
 {
     if ([task didSucceed])

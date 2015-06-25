@@ -31,11 +31,17 @@ extern NSString *const VIMTaskQueueTaskSucceededNotification;
 
 @class VIMTask;
 
+typedef BOOL(^TaskQueueQueryBlock)(VIMTask *task);
+typedef NSMutableArray *(^TaskQueueProcessBlock)(VIMTask *task);
+
 @interface VIMTaskQueue : NSObject
 
 @property (nonatomic, strong, readonly) NSString *name;
 
 @property (nonatomic, assign, readonly) NSInteger taskCount;
+
+@property (nonatomic, strong) VIMTask *currentTask;
+
 
 - (instancetype)initWithName:(NSString *)name;
 
@@ -47,12 +53,15 @@ extern NSString *const VIMTaskQueueTaskSucceededNotification;
 - (void)resume;
 - (BOOL)isSuspended;
 
+
 // Optional subclass overrides
 
 // Override to modiy task before it is started [AH]
 - (void)prepareTask:(VIMTask *)task;
 
 - (VIMTask *)taskForIdentifier:(NSString *)identifier;
+- (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query;
+- (NSArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor;
 
 // Override to return shared container defaults [AH]
 - (NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]
