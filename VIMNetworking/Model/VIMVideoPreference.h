@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 Vimeo. All rights reserved.
 //
 
-#import "VIMModelObject.h"
+#import <VIMObjectMapper/VIMModelObject.h>
 
 @interface VIMVideoPreference : VIMModelObject
 

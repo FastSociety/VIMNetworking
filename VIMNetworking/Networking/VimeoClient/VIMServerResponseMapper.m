@@ -28,8 +28,8 @@
 #import "VIMRequestOperation.h"
 #import "VIMServerResponse.h"
 #import "VIMRequestDescriptor.h"
-#import "VIMObjectMapper.h"
-#import "VIMMappable.h"
+#import <VIMObjectMapper/VIMObjectMapper.h>
+#import <VIMObjectMapper/VIMMappable.h>
 #import "NSError+BaseError.h"
 
 @implementation VIMServerResponseMapper

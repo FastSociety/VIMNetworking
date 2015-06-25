@@ -29,7 +29,7 @@
 #import "KeychainUtility.h"
 #import "VIMAccount.h"
 #import "VIMAccountCredential.h"
-#import "VIMObjectMapper.h"
+#import <VIMObjectMapper/VIMObjectMapper.h>
 #import "VIMUser.h"
 
 static NSString *const LegacyAccountKey = @"kVIMAccountStore_SaveKey"; // Added 6/22/2015 [AH]

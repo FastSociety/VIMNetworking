@@ -26,7 +26,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "VIMModelObject.h"
+#import <VIMObjectMapper/VIMModelObject.h>
 
 @class VIMVideoLog;
 

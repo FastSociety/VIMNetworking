@@ -26,8 +26,8 @@
 
 #import "VIMRequestOperationManager.h"
 #import <AFNetworking/AFHTTPRequestOperation.h>
-#import "VIMMappable.h"
-#import "VIMObjectMapper.h"
+#import <VIMObjectMapper/VIMMappable.h>
+#import <VIMObjectMapper/VIMObjectMapper.h>
 #import "VIMCache.h"
 #import "VIMRequestToken.h"
 #import "VIMRequestOperation.h"

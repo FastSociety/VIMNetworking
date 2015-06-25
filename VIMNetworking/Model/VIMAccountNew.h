@@ -25,7 +25,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "VIMModelObject.h"
+#import <VIMObjectMapper/VIMModelObject.h>
 #import "VIMUser.h"
 
 @interface VIMAccountNew : VIMModelObject
