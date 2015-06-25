@@ -26,6 +26,7 @@
 
 #import "VIMTempFileMaker.h"
 #import "VIMSession.h"
+#import "VIMSessionConfiguration.h"
 #import <Photos/Photos.h>
 #import <AVFoundation/AVFoundation.h>
 #import <MobileCoreServices/MobileCoreServices.h>
@@ -260,7 +261,7 @@ static const NSString *VIMTempFileMakerErrorDomain = @"VIMTempFileMakerErrorDoma
 {
     NSURL *groupURL = nil;
     
-    NSString *sharedContainerID = [[VIMSession sharedSession] sharedContainerID]; // TODO: eliminate VIMSession dependency [AH]
+    NSString *sharedContainerID = [VIMSession sharedSession].configuration.sharedContainerID; // TODO: eliminate VIMSession dependency [AH]
     if (sharedContainerID)
     {
         groupURL = [[NSFileManager new] containerURLForSecurityApplicationGroupIdentifier:sharedContainerID];

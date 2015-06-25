@@ -69,6 +69,7 @@ typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus sta
     if (self)
     {
         _wasOffline = NO;
+        
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
         
         AFNetworkReachabilityStatusBlock originalReachabilityStatusChangeCallback = [AFNetworkReachabilityManager sharedManager].networkReachabilityStatusBlock;
