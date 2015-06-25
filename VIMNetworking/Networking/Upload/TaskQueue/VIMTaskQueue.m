@@ -64,6 +64,8 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         _archivalQueue = dispatch_queue_create("com.vimeo.uploadQueue.archivalQueue", DISPATCH_QUEUE_SERIAL);
         _tasksQueue = dispatch_queue_create("com.vimeo.uploadQueue.taskQueue", DISPATCH_QUEUE_SERIAL);
 
+        dispatch_queue_set_specific(_tasksQueue, TaskQueueSpecific, (void *)TaskQueueSpecific, NULL);
+
         _tasks = [NSMutableArray array];
 
         [self load];
@@ -345,6 +347,8 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         archiveDictionary[CurrentTaskKey] = self.currentTask;
     }
     
+    NSLog(@"SAVING: %@", dictionary);
+    
     __weak typeof(self) welf = self;
     dispatch_async(_archivalQueue, ^{
         
@@ -399,6 +403,8 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             
             NSArray *tasks = dictionary[TasksKey];
             [self.tasks addObjectsFromArray:tasks];
+            
+            [self updateTaskCount];
             
             NSString *message = [NSString stringWithFormat:@"LOAD %lu", (unsigned long)[tasks count]];
             [VIMTaskQueueDebugger postLocalNotificationWithContext:self.name message:message];
