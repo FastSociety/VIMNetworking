@@ -8,7 +8,7 @@
 
 #import "NSError+VIMNetworking.h"
 #import "NSError+BaseError.h"
-#import "AFURLResponseSerialization.h"
+#import <AFNetworking/AFURLResponseSerialization.h>
 
 @implementation NSError (VIMNetworking)
 
