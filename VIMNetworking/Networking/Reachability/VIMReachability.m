@@ -23,6 +23,7 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 //  THE SOFTWARE.
 //
+#import <Foundation/Foundation.h>
 
 #import "VIMReachability.h"
 
@@ -31,6 +32,16 @@
 NSString * const VIMReachabilityStatusChangeOfflineNotification = @"VIMReachabilityStatusChangeOfflineNotification";
 NSString * const VIMReachabilityStatusChangeOnlineNotification = @"VIMReachabilityStatusChangeOnlineNotification";
 NSString * const VIMReachabilityStatusChangeWasOfflineInfoKey = @"VIMReachabilityStatusChangeWasOfflineInfoKey";
+
+
+// Getting at the protected networkReachability callback property in AFNetworking so that we can wrap around a previously set callback
+typedef void (^AFNetworkReachabilityStatusBlock)(AFNetworkReachabilityStatus status);
+
+@interface AFNetworkReachabilityManager ()
+@property (readwrite, nonatomic, copy) AFNetworkReachabilityStatusBlock networkReachabilityStatusBlock;
+@end
+
+
 
 @interface VIMReachability ()
 
@@ -60,9 +71,16 @@ NSString * const VIMReachabilityStatusChangeWasOfflineInfoKey = @"VIMReachabilit
         _wasOffline = NO;
         [[AFNetworkReachabilityManager sharedManager] startMonitoring];
         
+        AFNetworkReachabilityStatusBlock originalReachabilityStatusChangeCallback = [AFNetworkReachabilityManager sharedManager].networkReachabilityStatusBlock;
+        
         __weak typeof(self) weakSelf = self;
         [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status)
         {
+            
+            if (originalReachabilityStatusChangeCallback) {
+                originalReachabilityStatusChangeCallback(status);
+            }
+            
             if (status != AFNetworkReachabilityStatusNotReachable)
             {
                 [[NSNotificationCenter defaultCenter] postNotificationName:VIMReachabilityStatusChangeOnlineNotification object:nil userInfo:@{ VIMReachabilityStatusChangeWasOfflineInfoKey: @(weakSelf.wasOffline) }];
