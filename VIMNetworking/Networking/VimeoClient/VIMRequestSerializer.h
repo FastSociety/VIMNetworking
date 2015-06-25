@@ -24,7 +24,7 @@
 //  THE SOFTWARE.
 //
 
-#import <AFNetworking/AFSerialization.h>
+#import <AFNetworking/AFURLRequestSerialization.h>
 
 @interface VIMRequestSerializer : AFJSONRequestSerializer
 
