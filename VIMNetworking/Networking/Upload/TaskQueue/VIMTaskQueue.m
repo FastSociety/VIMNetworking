@@ -50,6 +50,8 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 @property (nonatomic, assign, readwrite) NSInteger taskCount;
 
+@property (nonatomic, strong, readwrite) VIMTask *currentTask;
+
 @end
 
 @implementation VIMTaskQueue
@@ -229,7 +231,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     return task;
 }
 
-
+//(void)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query completionBlock: (TaskQueueQueryCompletionBlock)completionBlock
 - (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query
 {
     __block BOOL result = false;
@@ -248,6 +250,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     return result;
 }
 
+//- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler:TaskQueueProcessCompletionBlock
 - (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
 {
     __block NSMutableArray *results;
