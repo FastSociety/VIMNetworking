@@ -31,11 +31,11 @@ extern NSString *const VIMTaskQueueTaskSucceededNotification;
 
 @class VIMTask;
 
-typedef void (^TaskQueueQueryCompletionBlock)(BOOL *match);
-typedef void (^TaskQueueQueryBlock)(VIMTask *task, TaskQueueQueryCompletionBlock completionBlock);
+typedef void (^TaskQueueQueryCompletionBlock)(BOOL match);
+typedef BOOL (^TaskQueueQueryBlock)(VIMTask *task);
 
 typedef void (^TaskQueueProcessCompletionBlock)(NSMutableArray *results);
-typedef void (^TaskQueueProcessBlock)(VIMTask *task, TaskQueueProcessCompletionBlock completionBlock);
+typedef NSMutableArray *(^TaskQueueProcessBlock)(VIMTask *task);
 
 @interface VIMTaskQueue : NSObject
 
@@ -63,8 +63,8 @@ typedef void (^TaskQueueProcessBlock)(VIMTask *task, TaskQueueProcessCompletionB
 - (void)prepareTask:(VIMTask *)task;
 
 - (VIMTask *)taskForIdentifier:(NSString *)identifier;
-- (void)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query completionHandler: TaskQueueQueryCompletionBlock;
-- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler:TaskQueueProcessCompletionBlock;
+- (void)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query completionHandler: (TaskQueueQueryCompletionBlock)completionBlock;
+- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler: (TaskQueueProcessCompletionBlock)completionBlock;
 
 // Override to return shared container defaults [AH]
 - (NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]

@@ -231,12 +231,11 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     return task;
 }
 
-//(void)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query completionBlock: (TaskQueueQueryCompletionBlock)completionBlock
-- (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query
+- (void)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query completionHandler: (TaskQueueQueryCompletionBlock)completionBlock;
 {
-    __block BOOL result = false;
-    dispatch_sync(_tasksQueue, ^{
+    dispatch_async(_tasksQueue, ^{
 
+        BOOL result = false;
         for (VIMTask *currentTask in self.tasks)
         {
             if (query(currentTask))
@@ -244,27 +243,23 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
                 result = true;
             }
         }
+        completionBlock(result);
 
     });
-    
-    return result;
 }
 
-//- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler:TaskQueueProcessCompletionBlock
-- (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
+- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler: (TaskQueueProcessCompletionBlock)completionBlock;
+//- (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
 {
-    __block NSMutableArray *results;
-    dispatch_sync(_tasksQueue, ^{
+    dispatch_async(_tasksQueue, ^{
         
+        NSMutableArray *results;
         for (VIMTask *currentTask in self.tasks)
         {
             [results addObject: taskProcessor(currentTask)];
         }
-        
+        completionBlock(results);
     });
-    
-    return results;
-
 }
 
 - (void)prepareTask:(VIMTask *)task
