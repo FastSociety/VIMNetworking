@@ -40,9 +40,6 @@ typedef NSMutableArray *(^TaskQueueProcessBlock)(VIMTask *task);
 
 @property (nonatomic, assign, readonly) NSInteger taskCount;
 
-@property (nonatomic, strong) VIMTask *currentTask;
-
-
 - (instancetype)initWithName:(NSString *)name;
 
 - (void)addTasks:(NSArray *)tasks;
