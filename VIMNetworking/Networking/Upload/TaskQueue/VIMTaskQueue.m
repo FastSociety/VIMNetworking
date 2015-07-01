@@ -287,6 +287,25 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 }
 
+- (NSMutableArray *)processCurrentTask:(TaskQueueProcessBlock)taskProcessor
+{
+    __block NSMutableArray *results;
+    if (taskProcessor == nil) {
+        return results;
+    }
+    
+    dispatch_sync(_tasksQueue, ^{
+        
+        if (self.currentTask != nil) {
+            [results addObject: taskProcessor(self.currentTask)];
+        }
+    });
+    
+    return results;
+    
+}
+
+
 - (void)prepareTask:(VIMTask *)task
 {
     // Optional subclass override 
