@@ -249,7 +249,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 }
 
 - (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler: (TaskQueueProcessCompletionBlock)completionBlock;
-//- (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
 {
     dispatch_async(_tasksQueue, ^{
         
