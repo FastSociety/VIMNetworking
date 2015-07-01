@@ -50,6 +50,8 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 @property (nonatomic, assign, readwrite) NSInteger taskCount;
 
+@property (nonatomic, strong, readwrite) VIMTask *currentTask;
+
 @end
 
 @implementation VIMTaskQueue
@@ -229,12 +231,11 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     return task;
 }
 
-
-- (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query
+- (void)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query completionHandler: (TaskQueueQueryCompletionBlock)completionBlock;
 {
-    __block BOOL result = false;
-    dispatch_sync(_tasksQueue, ^{
+    dispatch_async(_tasksQueue, ^{
 
+        BOOL result = false;
         for (VIMTask *currentTask in self.tasks)
         {
             if (query(currentTask))
@@ -242,26 +243,22 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
                 result = true;
             }
         }
+        completionBlock(result);
 
     });
-    
-    return result;
 }
 
-- (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
+- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler: (TaskQueueProcessCompletionBlock)completionBlock;
 {
-    __block NSMutableArray *results;
-    dispatch_sync(_tasksQueue, ^{
+    dispatch_async(_tasksQueue, ^{
         
+        NSMutableArray *results;
         for (VIMTask *currentTask in self.tasks)
         {
             [results addObject: taskProcessor(currentTask)];
         }
-        
+        completionBlock(results);
     });
-    
-    return results;
-
 }
 
 - (void)prepareTask:(VIMTask *)task
