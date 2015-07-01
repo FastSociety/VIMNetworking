@@ -231,8 +231,13 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     return task;
 }
 
-- (void)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query completionHandler: (TaskQueueQueryCompletionBlock)completionBlock;
+- (void)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query completionHandler:(TaskQueueQueryCompletionBlock)completionBlock;
 {
+    // return if there is no query or completion block
+    if (query == nil || completionBlock == nil) {
+        return;
+    }
+    
     dispatch_async(_tasksQueue, ^{
 
         BOOL result = false;
@@ -241,6 +246,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             if (query(currentTask))
             {
                 result = true;
+                break;
             }
         }
         completionBlock(result);
@@ -248,8 +254,13 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     });
 }
 
-- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler: (TaskQueueProcessCompletionBlock)completionBlock;
+- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler:(TaskQueueProcessCompletionBlock)completionBlock;
 {
+    // return if there is no query or completion block
+    if (taskProcessor == nil || completionBlock == nil) {
+        return;
+    }
+    
     dispatch_async(_tasksQueue, ^{
         
         NSMutableArray *results;
