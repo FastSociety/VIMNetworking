@@ -50,6 +50,9 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 @property (nonatomic, assign, readwrite) NSInteger taskCount;
 
+@property (nonatomic, strong, readwrite) VIMTask *currentTask;
+
+
 @end
 
 @implementation VIMTaskQueue
@@ -232,14 +235,25 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 - (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query
 {
+    if (query == nil) {
+        return NO;
+    }
+    
     __block BOOL result = false;
     dispatch_sync(_tasksQueue, ^{
+        
+        if (self.currentTask != nil && query(self.currentTask)) {
+            result = YES;
+            return;
+        }
+        
 
         for (VIMTask *currentTask in self.tasks)
         {
             if (query(currentTask))
             {
-                result = true;
+                result = YES;
+                break;
             }
         }
 
@@ -251,7 +265,16 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 - (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
 {
     __block NSMutableArray *results;
+    if (taskProcessor == nil) {
+        return results;
+    }
+    
     dispatch_sync(_tasksQueue, ^{
+        
+        if (self.currentTask != nil) {
+            [results addObject: taskProcessor(self.currentTask)];
+        }
+        
         
         for (VIMTask *currentTask in self.tasks)
         {
