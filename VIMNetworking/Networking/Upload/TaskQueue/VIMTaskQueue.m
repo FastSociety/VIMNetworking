@@ -264,7 +264,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 - (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
 {
-    __block NSMutableArray *results;
+    __block NSMutableArray *results = [[NSMutableArray alloc] init];
     if (taskProcessor == nil) {
         return results;
     }
@@ -289,7 +289,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 - (NSMutableArray *)processCurrentTask:(TaskQueueProcessBlock)taskProcessor
 {
-    __block NSMutableArray *results;
+    __block NSMutableArray *results = [[NSMutableArray alloc] init];
     if (taskProcessor == nil) {
         return results;
     }
