@@ -31,10 +31,7 @@ extern NSString *const VIMTaskQueueTaskSucceededNotification;
 
 @class VIMTask;
 
-typedef void (^TaskQueueQueryCompletionBlock)(BOOL match);
-typedef BOOL (^TaskQueueQueryBlock)(VIMTask *task);
-
-typedef void (^TaskQueueProcessCompletionBlock)(NSMutableArray *results);
+typedef BOOL(^TaskQueueQueryBlock)(VIMTask *task);
 typedef NSMutableArray *(^TaskQueueProcessBlock)(VIMTask *task);
 
 @interface VIMTaskQueue : NSObject
@@ -43,7 +40,7 @@ typedef NSMutableArray *(^TaskQueueProcessBlock)(VIMTask *task);
 
 @property (nonatomic, assign, readonly) NSInteger taskCount;
 
-@property (nonatomic, strong, readonly) VIMTask *currentTask;
+@property (nonatomic, strong) VIMTask *currentTask;
 
 
 - (instancetype)initWithName:(NSString *)name;
@@ -63,8 +60,8 @@ typedef NSMutableArray *(^TaskQueueProcessBlock)(VIMTask *task);
 - (void)prepareTask:(VIMTask *)task;
 
 - (VIMTask *)taskForIdentifier:(NSString *)identifier;
-- (void)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query completionHandler: (TaskQueueQueryCompletionBlock)completionBlock;
-- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor completionHandler: (TaskQueueProcessCompletionBlock)completionBlock;
+- (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query;
+- (NSArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor;
 
 // Override to return shared container defaults [AH]
 - (NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]
