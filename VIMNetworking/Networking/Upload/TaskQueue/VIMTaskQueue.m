@@ -234,10 +234,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 - (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query
 {
-<<<<<<< HEAD
-    __block BOOL result = false;
-    dispatch_sync(_tasksQueue, ^{
-=======
     if (query == nil) {
         return NO;
     }
@@ -250,8 +246,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             return;
         }
         
->>>>>>> cameoVN
-
         for (VIMTask *currentTask in self.tasks)
         {
             if (query(currentTask))
@@ -269,9 +263,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 - (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
 {
     __block NSMutableArray *results;
-<<<<<<< HEAD
-    dispatch_sync(_tasksQueue, ^{
-=======
     if (taskProcessor == nil) {
         return results;
     }
@@ -281,9 +272,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         if (self.currentTask != nil) {
             [results addObject: taskProcessor(self.currentTask)];
         }
-        
->>>>>>> cameoVN
-        
+                
         for (VIMTask *currentTask in self.tasks)
         {
             [results addObject: taskProcessor(currentTask)];
