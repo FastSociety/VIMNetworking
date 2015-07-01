@@ -58,7 +58,8 @@ typedef NSMutableArray *(^TaskQueueProcessBlock)(VIMTask *task);
 
 - (VIMTask *)taskForIdentifier:(NSString *)identifier;
 - (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query;
-- (NSArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor;
+- (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor;
+- (NSMutableArray *)processCurrentTask:(TaskQueueProcessBlock)taskProcessor;
 
 // Override to return shared container defaults [AH]
 - (NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]
