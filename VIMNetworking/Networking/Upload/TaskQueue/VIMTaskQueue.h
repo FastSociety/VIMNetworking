@@ -32,7 +32,7 @@ extern NSString *const VIMTaskQueueTaskSucceededNotification;
 @class VIMTask;
 
 typedef BOOL(^TaskQueueQueryBlock)(VIMTask *task);
-typedef id(^TaskQueueProcessBlock)(VIMTask *task);
+typedef NSMutableDictionary*(^TaskQueueProcessBlock)(VIMTask *task);
 
 @interface VIMTaskQueue : NSObject
 
@@ -59,7 +59,7 @@ typedef id(^TaskQueueProcessBlock)(VIMTask *task);
 - (VIMTask *)taskForIdentifier:(NSString *)identifier;
 - (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query;
 - (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor;
-- (NSMutableArray *)processCurrentTask:(TaskQueueProcessBlock)taskProcessor;
+- (NSMutableDictionary* *)processCurrentTask:(TaskQueueProcessBlock)taskProcessor;
 
 // Override to return shared container defaults [AH]
 - (NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]

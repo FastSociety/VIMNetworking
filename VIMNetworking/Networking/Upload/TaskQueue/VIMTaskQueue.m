@@ -287,9 +287,9 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 }
 
-- (NSMutableArray *)processCurrentTask:(TaskQueueProcessBlock)taskProcessor
+- (NSMutableDictionary *)processCurrentTask:(TaskQueueProcessBlock)taskProcessor
 {
-    __block NSMutableArray *results = [[NSMutableArray alloc] init];
+    __block NSMutableDictionary *results = [[NSMutableDictionary alloc] init];
     if (taskProcessor == nil) {
         return results;
     }
@@ -297,7 +297,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     dispatch_sync(_tasksQueue, ^{
         
         if (self.currentTask != nil) {
-            [results addObject: taskProcessor(self.currentTask)];
+            [results setObject: taskProcessor(self.currentTask) forKey:@"results"];
         }
     });
     
