@@ -389,7 +389,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         archiveDictionary[CurrentTaskKey] = self.currentTask;
     }
     
-    NSLog(@"SAVING: %@", dictionary);
+//    NSLog(@"SAVING: %@", dictionary);
     
     __weak typeof(self) welf = self;
     dispatch_async(_archivalQueue, ^{
