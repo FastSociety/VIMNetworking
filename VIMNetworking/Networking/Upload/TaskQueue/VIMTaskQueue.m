@@ -355,6 +355,27 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     }
 }
 
+-  (nullable VIMTask *)getNextActiveTask
+{
+    __block VIMTask *task = nil;
+    
+    dispatch_sync(_tasksQueue, ^{
+        NSUInteger i = 0;
+        for (VIMTask *currentTask in self.tasks)
+        {
+            if (currentTask.state != TaskStatePaused) {
+                task = currentTask;
+                [self.tasks removeObjectAtIndex:i];
+                break;
+            }
+            i++;
+        }
+        
+    });
+    
+    return task;
+}
+
 - (void)startNextTask
 {
     if (self.isSuspended)
@@ -370,9 +391,12 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     }
     
     [VIMTaskQueueDebugger postLocalNotificationWithContext:self.name message:@"NEXT"];
+    
+//    self.currentTask = [self.tasks firstObject];
+//    [self.tasks removeObjectAtIndex:0];
 
-    self.currentTask = [self.tasks firstObject];
-    [self.tasks removeObjectAtIndex:0];
+    // get next active (non-paused) task
+    self.currentTask = [self getNextActiveTask];
     
     [self prepareTask:self.currentTask];
     

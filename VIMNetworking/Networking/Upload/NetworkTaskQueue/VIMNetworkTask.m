@@ -47,6 +47,21 @@
     }
 }
 
+// the difference between suspended and paused states is that suspended tasks are resumed automatically
+// paused tasks are skipped by the task queue until their status changes from paused
+- (void)pause
+{
+    self.state = TaskStatePaused;
+    
+    [VIMTaskQueueDebugger postLocalNotificationWithContext:self.sessionManager.session.configuration.identifier message:[NSString stringWithFormat:@"%@ paused", self.name]];
+    
+    NSURLSessionTask *task = [self.sessionManager taskForIdentifier:self.backgroundTaskIdentifier];
+    if (task)
+    {
+        [task cancel];
+    }
+}
+
 - (void)cancel
 {
     self.state = TaskStateCancelled;
