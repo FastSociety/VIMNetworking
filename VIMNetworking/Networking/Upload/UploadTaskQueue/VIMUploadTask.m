@@ -172,6 +172,23 @@ static void *UploadProgressContext = &UploadProgressContext;
     [self.currentTask suspend];
 }
 
+- (void)pause
+{
+    // placeholder for future support [ME]
+    self.state = TaskStatePaused;
+    
+    [VIMTaskQueueDebugger postLocalNotificationWithContext:self.sessionManager.session.configuration.identifier message:[NSString stringWithFormat:@"%@ paused", self.name]];
+    
+    [self removeUploadProgressObserverIfNecessary];
+    
+    if (self.uploadProgressBlock)
+    {
+        self.uploadProgressBlock(0);
+    }
+    
+    [self.currentTask pause];
+}
+
 - (void)cancel
 {    
     self.state = TaskStateCancelled;
