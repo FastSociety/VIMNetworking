@@ -31,8 +31,8 @@ extern NSString *const __nonnull VIMTaskQueueTaskSucceededNotification;
 
 @class VIMTask;
 
-typedef BOOL(^TaskQueueQueryBlock)( VIMTask * __nonnull task);
-typedef id(^TaskQueueProcessBlock)( VIMTask * __nonnull task);
+typedef  BOOL(^ __nullable TaskQueueQueryBlock)( VIMTask * __nonnull task);
+typedef __nullable id(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull task);
 
 @interface VIMTaskQueue : NSObject
 
