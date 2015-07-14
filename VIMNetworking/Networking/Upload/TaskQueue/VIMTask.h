@@ -35,7 +35,7 @@ typedef NS_ENUM(NSInteger, VIMTaskState)
     TaskStateSuspended,
     TaskStateCancelled,
     TaskStateFinished,
-    TaskStatePaused // intentional skip this task until its state changes to suspended
+    TaskStatePaused // intentional skip this task until its state changes
 };
 
 @class VIMTask;
