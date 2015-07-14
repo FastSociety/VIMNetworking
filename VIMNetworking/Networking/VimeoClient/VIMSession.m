@@ -32,6 +32,7 @@
 #import "VIMAuthenticator+Private.h"
 #import "VIMReachability.h"
 #import "VIMCache.h"
+#import "VIMObjectMapper.h"
 
 static NSString *const ClientCredentialsAccountKey = @"ClientCredentialsAccountKey";
 static NSString *const UserAccountKey = @"UserAccountKey";
@@ -103,6 +104,11 @@ static VIMSession *_sharedSession;
         [[NSNotificationCenter defaultCenter] postNotificationName:VIMSession_AuthenticatedAccountDidChangeNotification object:nil];
     });
 
+    if (self.currentUserRefreshRequest)
+    {
+        return;
+    }
+    
     __weak typeof(self) weakSelf = self;
     self.currentUserRefreshRequest = [self refreshAuthenticatedUserWithCompletionBlock:^(NSError *error) {
         
@@ -192,7 +198,7 @@ static VIMSession *_sharedSession;
 {
     VIMCache *cache = [VIMCache sharedCache];
     
-    if ([self.account isAuthenticatedWithUser])
+    if (self.account && [self.account isAuthenticatedWithUser])
     {
         NSString *name = [NSString stringWithFormat:@"user_%@", self.account.user.objectID];
         cache = [[VIMCache alloc] initWithName:name];
@@ -268,9 +274,7 @@ static VIMSession *_sharedSession;
 
 - (id<VIMRequestToken>)authenticateWithClientCredentialsGrant:(VIMErrorCompletionBlock)completionBlock
 {
-    NSAssert([self.account isAuthenticatedWithClientCredentials] == NO, @"Attempt to authenticate with client credentials grant when already authenticated with client credentials grant");
-    
-    if ([self.account isAuthenticatedWithClientCredentials])
+    if ([self.account isAuthenticatedWithClientCredentials] && !self.account.isInvalid)
     {
         if (completionBlock)
         {
@@ -348,28 +352,39 @@ static VIMSession *_sharedSession;
     }];
 }
 
-- (id<VIMRequestToken>)logoutWithCompletionBlock:(VIMRequestCompletionBlock)completionBlock
+- (id<VIMRequestToken>)logout
 {
     NSAssert([self.account isAuthenticatedWithUser], @"logout can only occur when a user is logged in");
-    if (![self.account isAuthenticatedWithUser])
+    if (![self.account isAuthenticatedWithUser] && !self.account.isInvalid)
     {
         return nil;
     }
 
+    // Must call logout before account is changed [AH]
+    id<VIMRequestToken> logoutRequest = [self.client logoutWithCompletionBlock:nil];
+
     VIMAccountNew *account = [VIMAccountStore loadAccountForKey:ClientCredentialsAccountKey];
-    [VIMAccountStore deleteAccount:self.account forKey:UserAccountKey];
+    [VIMAccountStore deleteAccountForKey:UserAccountKey];
     self.account = account;
-    
-    NSAssert(self.account != nil, @"account cannot be nil after logging out");
     
     [self.client.cache removeAllObjects];
     self.client.cache = [self buildCache];
+
+    // Client Credentials Account can be nil if upgraded from v5.4.2 as a logged in user. [AH]
+    if (account == nil)
+    {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [[NSNotificationCenter defaultCenter] postNotificationName:kVimeoClient_InvalidTokenNotification object:nil];
+        });
+        
+        return nil;
+    }
     
     dispatch_async(dispatch_get_main_queue(), ^{
         [[NSNotificationCenter defaultCenter] postNotificationName:VIMSession_AuthenticatedAccountDidChangeNotification object:nil];
     });
 
-    return [self.client logoutWithCompletionBlock:completionBlock];
+    return logoutRequest;
 }
 
 #pragma mark Configuration
@@ -377,7 +392,7 @@ static VIMSession *_sharedSession;
 - (BOOL)changeAccount:(VIMAccountNew *)account
 {
     NSParameterAssert(account);
-    if (account == nil || ![account isAuthenticated])
+    if (account == nil || ![account isAuthenticated] || ([account isAuthenticatedWithUser] && (account.user == nil || account.userJSON == nil)))
     {
         return NO;
     }
@@ -434,7 +449,6 @@ static VIMSession *_sharedSession;
     VIMRequestDescriptor *descriptor = [[VIMRequestDescriptor alloc] init];
     descriptor.cachePolicy = VIMCachePolicy_NetworkOnly;
     descriptor.urlPath = @"/me";
-    descriptor.modelClass = [VIMUser class];
     
     __weak typeof(self) weakSelf = self;
     return [self.client requestDescriptor:descriptor completionBlock:^(VIMServerResponse *response, NSError *error) {
@@ -466,8 +480,12 @@ static VIMSession *_sharedSession;
             return;
         }
         
-        VIMUser *user = response.result;
+        VIMObjectMapper *mapper = [[VIMObjectMapper alloc] init];
+        [mapper addMappingClass:[VIMUser class] forKeypath:@""];
+        VIMUser *user = [mapper applyMappingToJSON:response.result];
+
         strongSelf.account.user = user;
+        strongSelf.account.userJSON = response.result;
         
         [VIMAccountStore saveAccount:strongSelf.account forKey:UserAccountKey];
         
