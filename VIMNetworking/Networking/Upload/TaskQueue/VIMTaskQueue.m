@@ -177,12 +177,16 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     
     self.suspended = YES;
     
-    if (self.currentTask)
-    {
-        [self.currentTask suspend];
-    }
-    
-    [self save];
+    dispatch_async(_tasksQueue, ^{
+
+        if (self.currentTask)
+        {
+            [self.currentTask suspend];
+        }
+        
+        [self save];
+        
+    });
 }
 
 - (void)resume
@@ -194,9 +198,9 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
     self.suspended = NO;
     
-    [self save];
-
     dispatch_async(_tasksQueue, ^{
+
+        [self save];
 
         [self restart];
     
@@ -210,15 +214,34 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         return nil;
     }
     
-    if ([self.currentTask.identifier isEqualToString:identifier])
+    __block VIMTask *task = nil;
+
+    if (dispatch_get_specific(TaskQueueSpecific))
     {
-        return self.currentTask;
+        task = [self _taskForIdentifier:identifier];
+    }
+    else
+    {
+        dispatch_sync(_tasksQueue, ^{ // TODO: Is this a problem when [self.tasks count] is large? [AH]
+
+            task = [self _taskForIdentifier:identifier];
+            
+        });
     }
     
-    __block VIMTask *task = nil;
-    
-    dispatch_sync(_tasksQueue, ^{ // TODO: Is this a problem when [self.tasks count] is large? [AH]
+    return task;
+}
 
+- (VIMTask *)_taskForIdentifier:(NSString *)identifier
+{
+    VIMTask *task = nil;
+    
+    if ([self.currentTask.identifier isEqualToString:identifier])
+    {
+        task = self.currentTask;
+    }
+    else
+    {
         for (VIMTask *currentTask in self.tasks)
         {
             if ([currentTask.identifier isEqualToString:identifier])
@@ -226,8 +249,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
                 task = currentTask;
             }
         }
-
-    });
+    }
     
     return task;
 }
@@ -308,7 +330,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
 - (void)prepareTask:(VIMTask *)task
 {
-    // Optional subclass override 
+    // Optional subclass override
 }
 
 - (NSUserDefaults *)taskQueueDefaults
@@ -386,7 +408,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     
     if (self.currentTask)
     {
-        archiveDictionary[CurrentTaskKey] = self.currentTask;
+        archiveDictionary[CurrentTaskKey] = [self.currentTask copy];
     }
     
 //    NSLog(@"SAVING: %@", dictionary);
