@@ -355,23 +355,22 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     }
 }
 
+// this method must be called within the task queue thread/safety [ME]
 -  (nullable VIMTask *)getNextActiveTask
 {
-    __block VIMTask *task = nil;
+    VIMTask *task = nil;
+
+    NSUInteger i = 0;
     
-    dispatch_sync(_tasksQueue, ^{
-        NSUInteger i = 0;
-        for (VIMTask *currentTask in self.tasks)
-        {
-            if (currentTask.state != TaskStatePaused) {
-                task = currentTask;
-                [self.tasks removeObjectAtIndex:i];
-                break;
-            }
-            i++;
+    for (VIMTask *currentTask in self.tasks)
+    {
+        if (currentTask.state != TaskStatePaused) {
+            task = currentTask;
+            [self.tasks removeObjectAtIndex:i];
+            break;
         }
-        
-    });
+        i++;
+    }
     
     return task;
 }
