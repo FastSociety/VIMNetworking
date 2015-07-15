@@ -44,6 +44,7 @@ typedef __nullable id(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull t
 
 - (void)addTasks:(nonnull NSArray *)tasks;
 - (void)addTask:(nonnull VIMTask *)task;
+- (void)prependTask:(nonnull VIMTask *)task;
 - (void)cancelAllTasks;
 - (void)cancelTask:(nonnull VIMTask *)task;
 - (void)suspend;
@@ -56,10 +57,16 @@ typedef __nullable id(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull t
 // Override to modiy task before it is started [AH]
 - (void)prepareTask:(nonnull VIMTask *)task;
 
+// general query and map methods [ME]
 - (nullable VIMTask *)taskForIdentifier:(nonnull NSString *)identifier;
 - (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query;
 - (nullable NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor;
 - (nullable NSMutableDictionary*)processCurrentTask:(TaskQueueProcessBlock)taskProcessor;
+
+// pause and resume methods [ME]
+- (nullable NSMutableArray *)pauseMatchingTasks:(TaskQueueQueryBlock)query;
+- (nullable NSMutableArray *)resumeMatchingTasks:(TaskQueueQueryBlock)query;
+
 
 // Override to return shared container defaults [AH]
 - (nonnull NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]
