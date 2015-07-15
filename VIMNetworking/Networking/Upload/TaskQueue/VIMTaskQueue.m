@@ -258,15 +258,8 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     }
     
     dispatch_sync(_tasksQueue, ^{
-        
-        if (self.currentTask != nil && query(self.currentTask)) {
-            [self.currentTask pause];
-            [self _prependTask: self.currentTask];
-            [results addObject: self.currentTask.identifier];
-            self.currentTask = nil;
-        }
-        
-        
+    
+        // order important check self.tasks then currentTask
         for (VIMTask *currentTask in self.tasks)
         {
             if (query(currentTask))
@@ -275,6 +268,15 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
                 [results addObject: currentTask.identifier];
             }
         }
+
+    
+        if (self.currentTask != nil && query(self.currentTask)) {
+            [self.currentTask pause];
+            [self _prependTask: self.currentTask];
+            [results addObject: self.currentTask.identifier];
+            self.currentTask = nil;
+        }
+        
         
         [self save];
         
