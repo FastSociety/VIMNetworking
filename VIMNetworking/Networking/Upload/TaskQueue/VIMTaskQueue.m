@@ -150,6 +150,26 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     });
 }
 
+// private prepend task must be called from within tasksQueue thread
+- (void)_prependTask:(VIMTask *)task
+{
+    if (!task)
+    {
+        return;
+    }
+    
+    [self.tasks insertObject:task atIndex:0];
+    
+    [self save];
+    
+    [self updateTaskCount];
+    
+    if (self.currentTask == nil)
+    {
+        [self startNextTask];
+    }
+}
+
 
 - (void)cancelAllTasks
 {
@@ -242,7 +262,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         
         if (self.currentTask != nil && query(self.currentTask)) {
             [self.currentTask pause];
-            [self prependTask: self.currentTask];
+            [self _prependTask: self.currentTask];
             [results addObject: self.currentTask.identifier];
             self.currentTask = nil;
         }
@@ -277,7 +297,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         {
             if (query(currentTask))
             {
-                // change state from paused to none so it can be executed at next opportunity
+                // change state from paused to none so task will be executed at next opportunity
                 currentTask.state = TaskStateNone;
                 [results addObject: self.currentTask.identifier];
             }
