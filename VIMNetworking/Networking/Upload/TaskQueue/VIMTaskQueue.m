@@ -277,6 +277,10 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             }
         }
         
+        [self save];
+        
+        [self restart];        
+        
     });
     
     return results;
@@ -303,6 +307,9 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             }
         }
         
+        [self save];
+        
+        [self restart];
     });
     
     return results;
