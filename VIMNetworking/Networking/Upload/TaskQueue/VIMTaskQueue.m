@@ -273,7 +273,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             if (query(currentTask))
             {
                 [currentTask pause];
-                [results addObject: self.currentTask.identifier];
+                [results addObject: currentTask.identifier];
             }
         }
         
