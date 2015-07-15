@@ -126,6 +126,30 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     });
 }
 
+- (void)prependTask:(VIMTask *)task
+{
+    if (!task)
+    {
+        return;
+    }
+    
+    dispatch_async(_tasksQueue, ^{
+        
+        [self.tasks insertObject:task atIndex:0];
+        
+        [self save];
+        
+        [self updateTaskCount];
+        
+        if (self.currentTask == nil)
+        {
+            [self startNextTask];
+        }
+        
+    });
+}
+
+
 - (void)cancelAllTasks
 {
     dispatch_async(_tasksQueue, ^{
@@ -205,6 +229,64 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     
     });
 }
+
+- (NSMutableArray *)pauseMatchingTasks:(TaskQueueQueryBlock)query
+{
+    __block NSMutableArray *results = [[NSMutableArray alloc] init];
+    if (query == nil) {
+        return results;
+    }
+    
+    dispatch_sync(_tasksQueue, ^{
+        
+        if (self.currentTask != nil && query(self.currentTask)) {
+            [self.currentTask pause];
+            [self prependTask: self.currentTask];
+            [results addObject: self.currentTask.identifier];
+            self.currentTask = nil;
+        }
+        
+        
+        for (VIMTask *currentTask in self.tasks)
+        {
+            if (query(currentTask))
+            {
+                [currentTask pause];
+                [results addObject: self.currentTask.identifier];
+            }
+        }
+        
+    });
+    
+    return results;
+}
+
+- (NSMutableArray *)resumeMatchingTasks:(TaskQueueQueryBlock)query
+{
+    __block NSMutableArray *results = [[NSMutableArray alloc] init];
+    if (query == nil) {
+        return results;
+    }
+    
+    dispatch_sync(_tasksQueue, ^{
+        
+        // currentTask can never be paused by design
+        
+        for (VIMTask *currentTask in self.tasks)
+        {
+            if (query(currentTask))
+            {
+                // change state from paused to none so it can be executed at next opportunity
+                currentTask.state = TaskStateNone;
+                [results addObject: self.currentTask.identifier];
+            }
+        }
+        
+    });
+    
+    return results;
+}
+
 
 - (VIMTask *)taskForIdentifier:(NSString *)identifier
 {
