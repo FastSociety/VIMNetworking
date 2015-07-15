@@ -299,7 +299,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             {
                 // change state from paused to none so task will be executed at next opportunity
                 currentTask.state = TaskStateNone;
-                [results addObject: self.currentTask.identifier];
+                [results addObject: currentTask.identifier];
             }
         }
         
