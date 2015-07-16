@@ -63,9 +63,10 @@ typedef __nullable id(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull t
 - (nullable NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor;
 - (nullable NSMutableDictionary*)processCurrentTask:(TaskQueueProcessBlock)taskProcessor;
 
-// pause and resume methods [ME]
+// pause, resume, and cancel methods [ME]
 - (nullable NSMutableArray *)pauseMatchingTasks:(TaskQueueQueryBlock)query;
 - (nullable NSMutableArray *)resumeMatchingTasks:(TaskQueueQueryBlock)query;
+- (nullable NSMutableArray *)cancelMatchingTasks:(TaskQueueQueryBlock)query;
 
 
 // Override to return shared container defaults [AH]
