@@ -317,6 +317,39 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     return results;
 }
 
+- (NSMutableArray *)cancelMatchingTasks:(TaskQueueQueryBlock)query
+{
+    __block NSMutableArray *results = [[NSMutableArray alloc] init];
+    if (query == nil) {
+        return results;
+    }
+    
+    dispatch_sync(_tasksQueue, ^{
+        
+        if (self.currentTask != nil && query(self.currentTask)) {
+            [results addObject: self.currentTask.identifier];
+            [self.currentTask cancel];
+            self.currentTask = nil;
+        }
+
+        // iterate backwards as cancelled tasks are removed from queue
+        for (VIMTask *currentTask in [self.tasks reverseObjectEnumerator])
+        {
+            if (query(currentTask))
+            {
+                [results addObject: currentTask.identifier];
+                [currentTask cancel];
+            }
+        }
+        
+        [self save];
+        
+        [self restart];
+        
+    });
+    
+    return results;
+}
 
 - (VIMTask *)taskForIdentifier:(NSString *)identifier
 {
