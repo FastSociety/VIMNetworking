@@ -331,13 +331,13 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             self.currentTask = nil;
         }
 
-        // iterate backwards as cancelled tasks are removed from queue
-        for (VIMTask *currentTask in [self.tasks reverseObjectEnumerator])
-        {
+        // iterate backwards and remove matching tasks from the queue
+        NSInteger count = [self.tasks count];
+        for (NSInteger index = (count - 1); index >= 0; index--) {
+            VIMTask *currentTask = self.tasks[index];
             if (query(currentTask))
             {
-                [results addObject: currentTask.identifier];
-                [currentTask cancel];
+                [self.tasks removeObjectAtIndex:index];
             }
         }
         
