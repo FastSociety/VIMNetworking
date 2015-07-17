@@ -44,7 +44,6 @@ typedef __nullable id(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull t
 
 - (void)addTasks:(nonnull NSArray *)tasks;
 - (void)addTask:(nonnull VIMTask *)task;
-- (void)prependTask:(nonnull VIMTask *)task;
 - (void)cancelAllTasks;
 - (void)cancelTask:(nonnull VIMTask *)task;
 - (void)suspend;

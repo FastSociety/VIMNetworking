@@ -126,29 +126,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     });
 }
 
-- (void)prependTask:(VIMTask *)task
-{
-    if (!task)
-    {
-        return;
-    }
-    
-    dispatch_async(_tasksQueue, ^{
-        
-        [self.tasks insertObject:task atIndex:0];
-        
-        [self save];
-        
-        [self updateTaskCount];
-        
-        if (self.currentTask == nil)
-        {
-            [self startNextTask];
-        }
-        
-    });
-}
-
 // private prepend task must be called from within tasksQueue thread
 - (void)_prependTask:(VIMTask *)task
 {
