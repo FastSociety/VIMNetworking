@@ -227,61 +227,98 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     });
 }
 
-- (NSMutableArray *)pauseMatchingTasks:(TaskQueueQueryBlock)query
+- (void)cancelTaskForIdentifier:(NSString *)identifier
 {
-    __block NSMutableArray *results = [[NSMutableArray alloc] init];
-    if (query == nil) {
-        return results;
+    if (!identifier)
+    {
+        return;
+    }
+    
+    dispatch_async(_tasksQueue, ^{
+        
+        __block VIMTask *task = nil;
+        
+        task = [self _taskForIdentifier:identifier];
+
+        if (self.currentTask == task)
+        {
+            [self.currentTask cancel];
+        }
+        else
+        {
+            [self.tasks removeObject:task];
+            [task cancel];
+        }
+        
+        [self save];
+        
+        [self updateTaskCount];
+        
+    });
+}
+
+
+- (void)pauseTaskForIdentifier:(NSString *)identifier
+{
+    if (!identifier)
+    {
+        return;
     }
     
     dispatch_sync(_tasksQueue, ^{
     
-        // order important check self.tasks then currentTask
-        for (VIMTask *currentTask in self.tasks)
-        {
-            if (query(currentTask))
-            {
-                [currentTask pause];
-                [results addObject: currentTask.identifier];
-            }
-        }
+        __block VIMTask *task = nil;
+        
+        task = [self _taskForIdentifier:identifier];
 
-    
-        if (self.currentTask != nil && query(self.currentTask)) {
+        if (self.currentTask == task)
+        {
             [self.currentTask pause];
             [self _prependTask: self.currentTask];
-            [results addObject: self.currentTask.identifier];
             self.currentTask = nil;
         }
-        
+        else
+        {
+            // order important check self.tasks then currentTask
+            for (VIMTask *currentTask in self.tasks)
+            {
+                if (currentTask == task)
+                {
+                    [currentTask pause];
+                    break;
+                }
+            }
+        }
         
         [self save];
         
         [self restart];        
         
     });
-    
-    return results;
 }
 
-- (NSMutableArray *)resumeMatchingTasks:(TaskQueueQueryBlock)query
+- (void)resumeTaskForIdentifier:(NSString *)identifier
 {
-    __block NSMutableArray *results = [[NSMutableArray alloc] init];
-    if (query == nil) {
-        return results;
+    if (!identifier)
+    {
+        return;
     }
-    
+
     dispatch_sync(_tasksQueue, ^{
-        
+
+        __block VIMTask *task = nil;
+
+        task = [self _taskForIdentifier:identifier];
+
         // currentTask can never be paused by design
         
         for (VIMTask *currentTask in self.tasks)
         {
-            if (query(currentTask))
+            if (currentTask == task)
             {
                 // change state from paused to none so task will be executed at next opportunity
                 currentTask.state = TaskStateNone;
-                [results addObject: currentTask.identifier];
+                break;
             }
         }
         
@@ -289,42 +326,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         
         [self restart];
     });
-    
-    return results;
-}
-
-- (NSMutableArray *)cancelMatchingTasks:(TaskQueueQueryBlock)query
-{
-    __block NSMutableArray *results = [[NSMutableArray alloc] init];
-    if (query == nil) {
-        return results;
-    }
-    
-    dispatch_sync(_tasksQueue, ^{
-        
-        if (self.currentTask != nil && query(self.currentTask)) {
-            [results addObject: self.currentTask.identifier];
-            [self.currentTask cancel];
-            self.currentTask = nil;
-        }
-
-        // iterate backwards and remove matching tasks from the queue
-        NSInteger count = [self.tasks count];
-        for (NSInteger index = (count - 1); index >= 0; index--) {
-            VIMTask *currentTask = self.tasks[index];
-            if (query(currentTask))
-            {
-                [self.tasks removeObjectAtIndex:index];
-            }
-        }
-        
-        [self save];
-        
-        [self restart];
-        
-    });
-    
-    return results;
 }
 
 - (VIMTask *)taskForIdentifier:(NSString *)identifier
