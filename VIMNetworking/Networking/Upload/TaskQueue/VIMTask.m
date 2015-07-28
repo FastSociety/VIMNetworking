@@ -56,6 +56,11 @@ const NSString *VIMTaskErrorDomain = @"VIMTaskErrorDomain";
     NSAssert(NO, @"Subclasses must override.");
 }
 
+- (void)resumeAfterPause // Weird name but until we rename resume.
+{
+    NSAssert(NO, @"Subclasses must override.");
+}
+
 
 - (void)cancel
 {

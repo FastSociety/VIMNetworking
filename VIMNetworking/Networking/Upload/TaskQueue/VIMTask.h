@@ -64,6 +64,7 @@ typedef NS_ENUM(NSInteger, VIMTaskState)
 - (void)resume;
 - (void)suspend;
 - (void)pause;
+- (void)resumeAfterPause; // Weird name but until we rename resume.
 - (void)cancel;
 - (BOOL)didSucceed;
 
