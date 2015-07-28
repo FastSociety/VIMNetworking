@@ -317,7 +317,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             if (currentTask == task)
             {
                 // change state from paused to none so task will be executed at next opportunity
-                currentTask.state = TaskStateNone;
+                [currentTask resumeAfterPause];
                 break;
             }
         }

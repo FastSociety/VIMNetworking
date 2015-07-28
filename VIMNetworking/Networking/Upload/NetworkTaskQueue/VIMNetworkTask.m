@@ -62,6 +62,13 @@
     }
 }
 
+// the difference between suspended and paused states is that suspended tasks are resumed automatically
+// paused tasks are skipped by the task queue until their status changes from paused
+- (void)resumeAfterPause
+{
+    self.state = TaskStateNone;
+}
+
 - (void)cancel
 {
     self.state = TaskStateCancelled;
