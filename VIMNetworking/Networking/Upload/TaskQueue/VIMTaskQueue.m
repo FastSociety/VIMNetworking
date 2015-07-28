@@ -227,7 +227,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     });
 }
 
-- (void)cancelTaskForIdentifier:(NSString *)identifier
+- (void)cancelTaskForIdentifier:(nullable NSString *)identifier
 {
     if (!identifier)
     {
@@ -258,7 +258,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 }
 
 
-- (void)pauseTaskForIdentifier:(NSString *)identifier
+- (void)pauseTaskForIdentifier:(nullable NSString *)identifier
 {
     if (!identifier)
     {
@@ -297,7 +297,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     });
 }
 
-- (void)resumeTaskForIdentifier:(NSString *)identifier
+- (void)resumeTaskForIdentifier:(nullable NSString *)identifier
 {
     if (!identifier)
     {
@@ -343,6 +343,9 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     }
     else
     {
+        // This will block until any activity in _tasksQueue is running, the longest could be when
+        //  [self.currentTask resume] is doing a file copy in the resume, solution would be to
+        
         dispatch_sync(_tasksQueue, ^{ // TODO: Is this a problem when [self.tasks count] is large? [AH]
 
             task = [self _taskForIdentifier:identifier];
