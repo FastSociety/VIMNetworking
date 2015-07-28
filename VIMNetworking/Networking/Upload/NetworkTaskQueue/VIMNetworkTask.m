@@ -60,6 +60,11 @@
     {
         [task cancel];
     }
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(togglePause:pause:)])
+    {
+        [self.delegate togglePause:self pause:TRUE];
+    }
 }
 
 // the difference between suspended and paused states is that suspended tasks are resumed automatically
@@ -67,6 +72,12 @@
 - (void)resumeAfterPause
 {
     self.state = TaskStateNone;
+
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(togglePause:pause:)])
+    {
+        [self.delegate togglePause:self pause:FALSE];
+    }
 }
 
 - (void)cancel

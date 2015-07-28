@@ -71,4 +71,9 @@ typedef __nullable id(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull t
 // Override to return shared container defaults [AH]
 - (nonnull NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]
 
+// Overide these in case you want to do your own delegate.
+- (void)togglePause:(nonnull VIMTask *)task pause:(BOOL) paused;
+- (void)taskDidStart:(nonnull VIMTask *)task;
+- (void)taskDidComplete:(nonnull VIMTask *)task;
+
 @end

@@ -90,6 +90,12 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     dispatch_async(_tasksQueue, ^{
 
         [self.tasks addObjectsFromArray:tasks];
+
+        // order important check self.tasks then currentTask
+        for (VIMTask *currentTask in tasks)
+        {
+            currentTask.delegate = self;
+        }
         
         [self save];
         
@@ -113,6 +119,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     dispatch_async(_tasksQueue, ^{
         
         [self.tasks addObject:task];
+        task.delegate = self;
         
         [self save];
         
@@ -267,11 +274,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     
     dispatch_sync(_tasksQueue, ^{
     
-        __block VIMTask *task = nil;
-        
-        task = [self _taskForIdentifier:identifier];
-
-        if (self.currentTask == task)
+        if ([self.currentTask.identifier isEqualToString:identifier])
         {
             [self.currentTask pause];
             [self _prependTask: self.currentTask];
@@ -282,7 +285,7 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             // order important check self.tasks then currentTask
             for (VIMTask *currentTask in self.tasks)
             {
-                if (currentTask == task)
+                if ([currentTask.identifier isEqualToString:identifier])
                 {
                     [currentTask pause];
                     break;
@@ -306,15 +309,11 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
 
     dispatch_sync(_tasksQueue, ^{
 
-        __block VIMTask *task = nil;
-
-        task = [self _taskForIdentifier:identifier];
-
         // currentTask can never be paused by design
         
         for (VIMTask *currentTask in self.tasks)
         {
-            if (currentTask == task)
+            if ([currentTask.identifier isEqualToString:identifier])
             {
                 // change state from paused to none so task will be executed at next opportunity
                 [currentTask resumeAfterPause];
@@ -474,8 +473,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     {
         [self prepareTask:self.currentTask]; // In the event of a restart that occurs on launch [AH]
         
-        self.currentTask.delegate = self;
-        
         [self.currentTask resume];
     }
 }
@@ -523,8 +520,6 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     self.currentTask = [self getNextActiveTask];
     
     [self prepareTask:self.currentTask];
-    
-    self.currentTask.delegate = self;
 
     [self save];
     
@@ -612,6 +607,11 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
             
             NSArray *tasks = dictionary[TasksKey];
             [self.tasks addObjectsFromArray:tasks];
+
+            for (VIMTask *currentTask in tasks)
+            {
+                currentTask.delegate = self;
+            }
             
             [self updateTaskCount];
             

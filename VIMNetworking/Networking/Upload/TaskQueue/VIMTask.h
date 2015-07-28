@@ -43,9 +43,11 @@ typedef NS_ENUM(NSInteger, VIMTaskState)
 @protocol VIMTaskDelegate <NSObject>
 
 @optional
+- (void)togglePause:(nonnull VIMTask *)task pause:(BOOL) paused;
 - (void)taskDidStart:(nonnull VIMTask *)task;
 - (void)task:(nonnull VIMTask *)task didStartSubtask:(nonnull VIMTask *)subtask;
 - (void)task:(nonnull VIMTask *)task didCompleteSubtask:(nonnull VIMTask *)subtask;
+- (void)taskProgressUpdated:(nonnull VIMTask *)task;
 
 @required
 - (void)taskDidComplete:(nonnull VIMTask *)task;
