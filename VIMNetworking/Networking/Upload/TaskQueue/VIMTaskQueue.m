@@ -604,7 +604,11 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
         if (dictionary)
         {
             self.currentTask = dictionary[CurrentTaskKey];
-            
+
+            if (self.currentTask != nil) {
+                self.currentTask.delegate = self;
+            }
+
             NSArray *tasks = dictionary[TasksKey];
             [self.tasks addObjectsFromArray:tasks];
 
