@@ -31,8 +31,7 @@ extern NSString *const __nonnull VIMTaskQueueTaskSucceededNotification;
 
 @class VIMTask;
 
-typedef  BOOL(^ __nullable TaskQueueQueryBlock)( VIMTask * __nonnull task);
-typedef __nullable id(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull task);
+typedef void(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull task);
 
 @interface VIMTaskQueue : NSObject
 
@@ -58,9 +57,7 @@ typedef __nullable id(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull t
 
 // general query and map methods [ME]
 - (nullable VIMTask *)taskForIdentifier:(nonnull NSString *)identifier;
-- (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query;
-- (nullable NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor;
-- (nullable NSMutableDictionary*)processCurrentTask:(TaskQueueProcessBlock)taskProcessor;
+- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor;
 
 // pause, resume, and cancel methods [ME]
 - (void)cancelTaskForIdentifier:(nullable NSString *)identifier;

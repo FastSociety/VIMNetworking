@@ -377,77 +377,25 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     return task;
 }
 
-
-- (BOOL)anyTaskSatisfiesQuery:(TaskQueueQueryBlock)query
+- (void)mapBlock:(TaskQueueProcessBlock)taskProcessor
 {
-    if (query == nil) {
-        return NO;
-    }
-    
-    __block BOOL result = false;
-    dispatch_sync(_tasksQueue, ^{
-        
-        if (self.currentTask != nil && query(self.currentTask)) {
-            result = YES;
-            return;
-        }
-        
-        for (VIMTask *currentTask in self.tasks)
-        {
-            if (query(currentTask))
-            {
-                result = YES;
-                break;
-            }
-        }
-
-    });
-    
-    return result;
-}
-
-- (NSMutableArray *)mapBlock:(TaskQueueProcessBlock)taskProcessor
-{
-    __block NSMutableArray *results = [[NSMutableArray alloc] init];
     if (taskProcessor == nil) {
-        return results;
+        return;
     }
     
     dispatch_sync(_tasksQueue, ^{
         
         if (self.currentTask != nil) {
-            [results addObject: taskProcessor(self.currentTask)];
+            taskProcessor(self.currentTask);
         }
                 
         for (VIMTask *currentTask in self.tasks)
         {
-            [results addObject: taskProcessor(currentTask)];
+            taskProcessor(currentTask);
         }
         
     });
-    
-    return results;
-
 }
-
-- (NSMutableDictionary *)processCurrentTask:(TaskQueueProcessBlock)taskProcessor
-{
-    __block NSMutableDictionary *results = [[NSMutableDictionary alloc] init];
-    if (taskProcessor == nil) {
-        return results;
-    }
-    
-    dispatch_sync(_tasksQueue, ^{
-        
-        if (self.currentTask != nil) {
-            [results setObject: taskProcessor(self.currentTask) forKey:@"results"];
-        }
-    });
-    
-    return results;
-    
-}
-
 
 - (void)prepareTask:(VIMTask *)task
 {
