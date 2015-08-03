@@ -51,8 +51,9 @@
 // paused tasks are skipped by the task queue until their status changes from paused
 - (void)pause
 {
+    // only executing or none can be paused
     self.state = TaskStatePaused;
-    
+
     [VIMTaskQueueDebugger postLocalNotificationWithContext:self.sessionManager.session.configuration.identifier message:[NSString stringWithFormat:@"%@ paused", self.name]];
     
     NSURLSessionTask *task = [self.sessionManager taskForIdentifier:self.backgroundTaskIdentifier];
@@ -71,6 +72,7 @@
 // paused tasks are skipped by the task queue until their status changes from paused
 - (void)resumeAfterPause
 {
+    // only executing or none can be paused
     self.state = TaskStateNone;
 
     
