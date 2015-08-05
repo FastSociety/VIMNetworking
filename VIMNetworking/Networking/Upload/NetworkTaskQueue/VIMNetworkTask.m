@@ -73,13 +73,15 @@
 - (void)resumeAfterPause
 {
     // only executing or none can be paused
-    self.state = TaskStateNone;
+    if (self.state == TaskStatePaused) {
+        self.state = TaskStateNone;
 
-    
-    if (self.delegate && [self.delegate respondsToSelector:@selector(togglePause:pause:)])
-    {
-        [self.delegate togglePause:self pause:FALSE];
+        if (self.delegate && [self.delegate respondsToSelector:@selector(togglePause:pause:)])
+        {
+            [self.delegate togglePause:self pause:FALSE];
+        }
     }
+    
 }
 
 - (void)cancel
