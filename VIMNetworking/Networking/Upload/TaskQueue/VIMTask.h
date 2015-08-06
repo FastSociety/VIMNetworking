@@ -51,7 +51,7 @@ typedef NS_ENUM(NSInteger, VIMTaskState)
 
 @required
 - (void)taskDidComplete:(nonnull VIMTask *)task;
-- (nullable dispatch_queue_t)tasksQueue;
+- (nonnull dispatch_queue_t)tasksQueue;
 
 @end
 
