@@ -654,4 +654,9 @@ static void *TaskQueueSpecific = "TaskQueueSpecific";
     }
 }
 
+- (dispatch_queue_t)tasksQueue
+{
+    return _tasksQueue;
+}
+
 @end

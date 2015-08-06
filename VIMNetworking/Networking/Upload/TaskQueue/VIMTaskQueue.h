@@ -64,6 +64,9 @@ typedef void(^ __nullable TaskQueueProcessBlock)( VIMTask * __nonnull task);
 - (void)pauseTaskForIdentifier:(nullable NSString *)identifier;
 - (void)resumeTaskForIdentifier:(nullable NSString *)identifier;
 
+// access to the task queue for dispatching back to [ME]
+- (dispatch_queue_t)tasksQueue;
+
 
 // Override to return shared container defaults [AH]
 - (nonnull NSUserDefaults *)taskQueueDefaults; // TODO: set this as a property instead? [AH]
